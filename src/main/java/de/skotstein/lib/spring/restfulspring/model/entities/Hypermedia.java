@@ -18,12 +18,14 @@ package de.skotstein.lib.spring.restfulspring.model.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import de.skotstein.lib.spring.restfulspring.model.representations.HypermediaRepresentation;
@@ -62,6 +64,19 @@ public abstract class Hypermedia {
         }
     }
 
+    public void replaceHyperlinkIfRelExisting(String rel, Object invocationValue, boolean expand){
+        Hyperlink hyperlink = getHyperlink(rel);
+        if(!Objects.isNull(hyperlink)){
+            Link link = null;
+            if(expand){
+                link = WebMvcLinkBuilder.linkTo(invocationValue).withRel(rel).expand();
+            }else{
+                link = WebMvcLinkBuilder.linkTo(invocationValue).withRel(rel);
+            }
+            hyperlink.setHref(link.getHref());
+        }
+    }
+
     public void addHyperlink(String rel, String href) {
        hyperlinks.add(new Hyperlink(href,rel));
     }
@@ -72,6 +87,13 @@ public abstract class Hypermedia {
         }
     }
 
+    public void replaceHyperlinkIfRelExisting(String rel, String href){
+        Hyperlink hyperlink = getHyperlink(rel);
+        if(!Objects.isNull(hyperlink)){
+            hyperlink.setHref(href);
+        }
+    }
+
     public boolean hasHyperlink(String rel) {
         return getHyperlink(rel) != null;
     }
@@ -79,6 +101,17 @@ public abstract class Hypermedia {
     public Hyperlink getHyperlink(String rel) {
         for (Hyperlink hyperlink : hyperlinks) {
             if (hyperlink.getRel().compareTo(rel) == 0) {
+                return hyperlink;
+            }
+        }
+        return null;
+    }
+
+    public Hyperlink removeHyperlink(String rel){
+        for(int i = 0; i < hyperlinks.size(); i++){
+            Hyperlink hyperlink = hyperlinks.get(i);
+            if(hyperlink.getRel().compareTo(rel)==0){
+                hyperlinks.remove(i);
                 return hyperlink;
             }
         }

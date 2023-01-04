@@ -131,4 +131,26 @@ public class RestAssert {
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,message);
     }
+
+      /**
+     * Throws a {@link ResponseStatusException} having the passed message, if the passed MAC address (string) does not match the following format:
+     * A valid MAC address must consist of 12 hexadecimal digits that may be separated by '-' or ':'
+     * @param macAddress
+     * @param message
+     */
+    public static void isMacAddress(String macAddress, String message){
+        if(!Objects.isNull(macAddress) && !macAddress.isBlank()){
+            macAddress = macAddress.toLowerCase().replace(":", "").replace("-", "");
+            if(macAddress.length() == 12){
+                for(int i = 0; i < 12; i++){
+                    char c = macAddress.charAt(i);
+                    if(!(c >= 48 && c <= 57) && !(c >= 97 && c <= 104)){
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,message);
+                    }
+                }
+                return;
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,message);
+    }
 }
