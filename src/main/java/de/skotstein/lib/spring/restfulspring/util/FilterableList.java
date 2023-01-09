@@ -18,6 +18,7 @@ package de.skotstein.lib.spring.restfulspring.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class FilterableList<T> extends ArrayList<T>{
     
@@ -37,17 +38,26 @@ public class FilterableList<T> extends ArrayList<T>{
     }
 
     public FilterableList<T> reduce(Filter filter){
-        return new FilterableList<T>(filter.filter(this));
+        if(!Objects.isNull(filter)){
+            return new FilterableList<T>(filter.filter(this));
+        }else{
+            return this;
+        }
+       
     }
 
     public FilterableList<T> reduce(Pagination pagination){
-        FilterableList<T> paginatedList = new FilterableList<T>();
-        for(int i = 0; i < this.size(); i++){
-            if(!pagination.skipItem(i)){
-                paginatedList.add(this.get(i));
+        if(!Objects.isNull(pagination)){
+            FilterableList<T> paginatedList = new FilterableList<T>();
+            for(int i = 0; i < this.size(); i++){
+                if(!pagination.skipItem(i)){
+                    paginatedList.add(this.get(i));
+                }
             }
+            return paginatedList;
+        }else{
+            return this;
         }
-        return paginatedList;
     }
 
     public void clearAndDeploy(List<T> target){
