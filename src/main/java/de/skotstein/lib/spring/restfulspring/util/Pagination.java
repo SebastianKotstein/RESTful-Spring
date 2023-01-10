@@ -66,9 +66,11 @@ public class Pagination {
             return false;
         }else{
             String query = "";
-            for (Entry<String,Object> entry : filter.getQueryParameter().entrySet()) {
-                if(entry.getValue()!=null){
-                    query+="&"+entry.getKey()+"="+entry.getValue();
+            if(!Objects.isNull(filter)){
+                for (Entry<String,Object> entry : filter.getQueryParameter().entrySet()) {
+                    if(entry.getValue()!=null){
+                        query+="&"+entry.getKey()+"="+entry.getValue();
+                    }
                 }
             }
             if(itemsBefore > 0){
@@ -85,9 +87,11 @@ public class Pagination {
                 representation.addHyperlink("previous", representation.getHyperlink("self").getHref()+query);
             }
             query = "";
-            for (Entry<String,Object> entry : filter.getQueryParameter().entrySet()) {
-                if(entry.getValue()!=null){
-                    query+="&"+entry.getKey()+"="+entry.getValue();
+            if(!Objects.isNull(filter)){
+                for (Entry<String,Object> entry : filter.getQueryParameter().entrySet()) {
+                    if(entry.getValue()!=null){
+                        query+="&"+entry.getKey()+"="+entry.getValue();
+                    }
                 }
             }
             if(itemsAfter > 0){
