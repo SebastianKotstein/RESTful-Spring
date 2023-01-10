@@ -134,9 +134,11 @@ public class Pagination {
             int fragments = totalSize/limit + (totalSize%limit!=0?1:0);
             for(int i = 0; i < fragments; i++){
                 String query = "?start="+(i*limit)+"&limit="+limit;
-                for (Entry<String,Object> entry : filter.getQueryParameter().entrySet()) {
-                    if(entry.getValue()!=null){
-                        query+="&"+entry.getKey()+"="+entry.getValue();
+                if(!Objects.isNull(filter)){
+                    for (Entry<String,Object> entry : filter.getQueryParameter().entrySet()) {
+                        if(entry.getValue()!=null){
+                            query+="&"+entry.getKey()+"="+entry.getValue();
+                        }
                     }
                 }
                 result.add(query);
