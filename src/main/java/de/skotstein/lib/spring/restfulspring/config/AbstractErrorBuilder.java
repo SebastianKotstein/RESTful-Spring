@@ -19,12 +19,16 @@ package de.skotstein.lib.spring.restfulspring.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+
+//import javax.servlet.http.HttpServletRequest; //deprecated since 3.0.4
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
+
+
 
 
 public abstract class AbstractErrorBuilder {
