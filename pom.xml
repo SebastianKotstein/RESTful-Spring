@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>de.skotstein.lib.spring</groupId>
 	<artifactId>restfulspring</artifactId>
-	<version>3.0.2-SNAPSHOT</version>
+	<version>3.0.3-SNAPSHOT</version>
 	<name>restfulspring</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
