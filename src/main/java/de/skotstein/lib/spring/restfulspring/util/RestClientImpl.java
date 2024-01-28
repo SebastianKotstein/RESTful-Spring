@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Stack;
 import java.util.AbstractMap.SimpleEntry;
@@ -27,7 +28,7 @@ public class RestClientImpl implements RestClient, RestClientTransition{
     private Stack<RestClientResult> resultStack = new Stack<RestClientResult>();
 
     private Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
-    //private List<AbstractMap.SimpleEntry<String,String>> headers = new ArrayList<AbstractMap.SimpleEntry<String,String>>();
+    private Map<String, Object> queryParameters = new HashMap<String, Object>();
 
     private String basePath = "";
 
@@ -95,6 +96,27 @@ public class RestClientImpl implements RestClient, RestClientTransition{
         }else{
             this.basePath = basePath;
         }
+        return this;
+    }
+
+    
+    @Override
+    public RestClient addParameter(String key, Object value) {
+        if(!Objects.isNull(key) && !Objects.isNull(value) && !key.isBlank()){
+            queryParameters.put(key, value);
+        }
+        return this;
+    }
+
+    @Override
+    public RestClient removeParameter(String key) {
+        queryParameters.remove(key);
+        return this;
+    }
+
+    @Override
+    public RestClient clearParameters() {
+        queryParameters.clear();
         return this;
     }
     
@@ -225,7 +247,22 @@ public class RestClientImpl implements RestClient, RestClientTransition{
         result.setUri(uri);
 
         try{
+
+            //build query string
+            String query = null;
+            for (Entry<String,Object> entry : queryParameters.entrySet()) {
+                if(Objects.isNull(query)){
+                    query = "?"+entry.getKey()+"="+entry.getValue();
+                }else{
+                    query+="&"+entry.getKey()+"="+entry.getValue();
+                }
+            }
+            if(!Objects.isNull(query)){
+                uri+=query;
+            }
+            
             URL url = new URL(uri);
+
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             
             //set method
@@ -292,6 +329,12 @@ public class RestClientImpl implements RestClient, RestClientTransition{
 
     @Override
     public RestClientTransition follow(String rel) throws RestClientExpectationFailedException, RestClientSchemaException{
+        return follow(rel, null);
+    }
+
+    
+    @Override
+    public RestClientTransition follow(String rel, String basePath) throws RestClientExpectationFailedException, RestClientSchemaException{
         RestClientResult result = new RestClientResult();
         
         RestClientResult lastResult = result();
@@ -307,6 +350,13 @@ public class RestClientImpl implements RestClient, RestClientTransition{
             for(JsonNode linkNode : findLinksNodes(jsonNode)){
                 uri = findUri(linkNode, rel);
                 if(uri != null){
+                    if(!Objects.isNull(basePath)){
+                        if(basePath.endsWith("/") && uri.startsWith("/")){
+                            uri = basePath.substring(0, basePath.length()-1)+uri;
+                        }else{
+                            uri = basePath+uri;
+                        }
+                    }
                     result.setUri(uri);
                     this.resultStack.add(result);
                     return this;
@@ -316,6 +366,7 @@ public class RestClientImpl implements RestClient, RestClientTransition{
         }else{
             throw new RestClientExpectationFailedException("Cannot query response payload since it is empty.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
     }
 
     public RestClientTransition followItem(String collectionKey, String itemSelectorKey, String itemSelectorValue, String rel) throws RestClientExpectationFailedException, RestClientSchemaException, RestClientItemNotFoundException{
@@ -428,5 +479,7 @@ public class RestClientImpl implements RestClient, RestClientTransition{
         }
         return null;
     }
+
+
     
 }

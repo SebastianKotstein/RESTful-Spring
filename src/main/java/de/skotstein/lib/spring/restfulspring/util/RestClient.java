@@ -77,6 +77,28 @@ public interface RestClient {
      */
     public RestClient withBase(String basePath);
 
+    
+    /**
+     * Adds the passed HTTP query parameter (key and value) to the {@link RestClientImpl}. This parameter is added to all subsequent HTTP requests. 
+     * @param key the parameter's key
+     * @param value the parameter's value
+     * @return the {@link RestClientImpl}
+     */
+    public RestClient addParameter(String key, Object value);
+
+     /**
+     * Removes the HTTP query parameter having the passed name if it is present (optional operation).
+     * @param name the parameter's key
+     * @return the {@link RestClientImpl}
+     */
+    public RestClient removeParameter(String key);
+
+    /**
+     * Removes all added HTTP query parameters
+     * @return the {@link RestClientImpl}
+     */
+    public RestClient clearParameters();
+
     public RestClient withRequestException(boolean requestExceptionEnabled);
 
     public RestClient get(String uri) throws RestClientIOException, RestClientRequestException;
@@ -89,7 +111,25 @@ public interface RestClient {
 
     public RestClient delete(String uri) throws RestClientIOException, RestClientRequestException;
 
+    /**
+     * Chooses the URI advertised with the passed link relation for the subsequent request.
+     * @param rel link relation
+     * @return {@link RestClientTransition} object
+     * @throws RestClientExpectationFailedException is thrown if the last response does not contain a JSON structure, if the remote service does not advertise the specified link relation in the current state, or if payload is empty.
+     * @throws RestClientSchemaException
+     */
     public RestClientTransition follow(String rel) throws RestClientExpectationFailedException, RestClientSchemaException;
+
+     /**
+     * Chooses the URI advertised with the passed link relation for the subsequent request. The URI is prefixed by the passed base path. Note that this prefix is only used for subsequent request.
+     * Consider using {@link RestClient#withBase(String)} instead if you intend to prefix all URIs. Never use both methods concurrently. 
+     * @param rel link relation
+     * @param basePath
+     * @return {@link RestClientTransition} object
+     * @throws RestClientExpectationFailedException is thrown if the last response does not contain a JSON structure, if the remote service does not advertise the specified link relation in the current state, or if payload is empty.
+     * @throws RestClientSchemaException
+     */
+    public RestClientTransition follow(String rel, String basePath) throws RestClientExpectationFailedException, RestClientSchemaException;
 
     public RestClientTransition followItem(String collectionKey, String itemSelectorKey, String itemSelectorValue, String rel) throws RestClientExpectationFailedException, RestClientSchemaException, RestClientItemNotFoundException;
 

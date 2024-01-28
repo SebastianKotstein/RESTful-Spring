@@ -91,6 +91,14 @@ public class RestClientResult {
         }
     }
 
+    public <T> T toJsonObject(java.lang.Class<T> valueType, Class<?> view, ObjectMapper objectMapper) throws IOException, RestClientExpectationFailedException{
+        if(!Objects.isNull(getResponseContent())){
+            return objectMapper.readerWithView(view).readValue(getResponseContent(), valueType);
+        }else{
+            throw new RestClientExpectationFailedException("Cannot query response payload since it is empty.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public String asString(){
         if(!Objects.isNull(getResponseContent())){
             return new String(getResponseContent(), StandardCharsets.UTF_8);
