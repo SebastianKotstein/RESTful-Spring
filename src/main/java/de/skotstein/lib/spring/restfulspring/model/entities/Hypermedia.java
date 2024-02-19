@@ -81,6 +81,10 @@ public abstract class Hypermedia {
        hyperlinks.add(new Hyperlink(href,rel));
     }
 
+    public void addHyperlink(Hyperlink hyperlink){
+        hyperlinks.add(hyperlink);
+    }
+
     public void addHyperlinkIfRelNotExisting(String rel, String href){
         if(!hasHyperlink(rel)){
             hyperlinks.add(new Hyperlink(href,rel));
