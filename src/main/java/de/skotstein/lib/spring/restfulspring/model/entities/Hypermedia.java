@@ -45,26 +45,65 @@ public abstract class Hypermedia {
         return hyperlinks;
     }
 
+    public void addHyperlink(String rel, String href) {
+        hyperlinks.add(new Hyperlink(href,rel));
+    }
+
+    public void addHyperlink(String rel, String href, String method){
+        Hyperlink hyperlink = new Hyperlink(href, rel);
+        hyperlink.setMethod(method);
+        hyperlinks.add(hyperlink);
+    }
+
     public void addHyperlink(String rel, Object invocationValue, boolean expand) {
         if (expand) {
             hyperlinks.add(new Hyperlink(WebMvcLinkBuilder.linkTo(invocationValue).withRel(rel).expand()));
         } else {
             hyperlinks.add(new Hyperlink(WebMvcLinkBuilder.linkTo(invocationValue).withRel(rel)));
         }
+    }
 
+    public void addHyperlink(String rel, Object invocationValue, boolean expand, String method){
+        Hyperlink hyperlink = null;
+        if (expand) {
+            hyperlink = new Hyperlink(WebMvcLinkBuilder.linkTo(invocationValue).withRel(rel).expand());
+        } else {
+            hyperlink = new Hyperlink(WebMvcLinkBuilder.linkTo(invocationValue).withRel(rel));
+        }
+        hyperlink.setMethod(method);
+        hyperlinks.add(hyperlink);
+    }
+
+    public void addHyperlinkIfRelNotExisting(String rel, String href){
+        if(!hasHyperlink(rel)){
+            hyperlinks.add(new Hyperlink(href,rel));
+        }
     }
 
     public void addHyperlinkIfRelNotExisting(String rel, Object invocationValue, boolean expand){
         if(!hasHyperlink(rel)){
-            if (expand) {
-                hyperlinks.add(new Hyperlink(WebMvcLinkBuilder.linkTo(invocationValue).withRel(rel).expand()));
-            } else {
-                hyperlinks.add(new Hyperlink(WebMvcLinkBuilder.linkTo(invocationValue).withRel(rel)));
-            }
+            this.addHyperlink(rel, invocationValue, expand);
+        }
+    }
+
+    public void addHyperlinkIfRelNotExisting(String rel, Object invocationValue, boolean expand, String method){
+        if(!hasHyperlink(rel)){
+            this.addHyperlink(rel, invocationValue, expand, method);
+        }
+    }
+
+    public void replaceHyperlinkIfRelExisting(String rel, String href){
+        Hyperlink hyperlink = getHyperlink(rel);
+        if(!Objects.isNull(hyperlink)){
+            hyperlink.setHref(href);
         }
     }
 
     public void replaceHyperlinkIfRelExisting(String rel, Object invocationValue, boolean expand){
+        this.replaceHyperlinkIfRelExisting(rel, invocationValue, expand, null);
+    }
+
+    public void replaceHyperlinkIfRelExisting(String rel, Object invocationValue, boolean expand, String method){
         Hyperlink hyperlink = getHyperlink(rel);
         if(!Objects.isNull(hyperlink)){
             Link link = null;
@@ -74,23 +113,9 @@ public abstract class Hypermedia {
                 link = WebMvcLinkBuilder.linkTo(invocationValue).withRel(rel);
             }
             hyperlink.setHref(link.getHref());
-        }
-    }
-
-    public void addHyperlink(String rel, String href) {
-       hyperlinks.add(new Hyperlink(href,rel));
-    }
-
-    public void addHyperlinkIfRelNotExisting(String rel, String href){
-        if(!hasHyperlink(rel)){
-            hyperlinks.add(new Hyperlink(href,rel));
-        }
-    }
-
-    public void replaceHyperlinkIfRelExisting(String rel, String href){
-        Hyperlink hyperlink = getHyperlink(rel);
-        if(!Objects.isNull(hyperlink)){
-            hyperlink.setHref(href);
+            if(!Objects.isNull(method)){
+                hyperlink.setMethod(method);
+            }
         }
     }
 

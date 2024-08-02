@@ -71,6 +71,7 @@ public class Hyperlink {
         this.mimeType = mimeType;
     }
 
+    
     public Hyperlink(Link link){
         this(link.getHref(),link.getRel().value(),null);
     }
