@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Filter {
 
@@ -88,6 +89,20 @@ public class Filter {
 
     public int size(){
         return items.size();
+    }
+
+    public boolean has(String key){
+        return !Objects.isNull(this.get(key));
+    }
+
+
+    public boolean hasValue(String key){
+        FilterCriterion filterCriterion = this.get(key);
+        if(!Objects.isNull(filterCriterion)){
+            return !Objects.isNull(filterCriterion.getQueryParameterValue());
+        }else{
+            return false;
+        }
     }
 
     public Map<String,Object> getQueryParameter(){
