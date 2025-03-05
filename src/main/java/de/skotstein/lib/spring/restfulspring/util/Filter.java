@@ -155,5 +155,37 @@ public class Filter {
         return new RhsNumericFilterMethod();
     }
 
+    public static FilterMethod GreaterThanFilterMethod(){
+        return new MinMaxFilterMethod(true, false);
+    }
+
+    public static FilterMethod LessThanFilterMethod(){
+        return new MinMaxFilterMethod(false, false);
+    }
+
+    public static FilterMethod GreaterThanOrEqualToFilterMethod(){
+        return new MinMaxFilterMethod(true, true);
+    }
+
+    public static FilterMethod LessThanOrEqualToFilterMethod(){
+        return new MinMaxFilterMethod(false, true);
+    }
+
+    public static FilterMethod GreaterThanFilterMethod(boolean matchNullValues){
+        return new MinMaxFilterMethod(true, false, matchNullValues);
+    }
+
+    public static FilterMethod LessThanFilterMethod(boolean matchNullValues){
+        return new MinMaxFilterMethod(false, false, matchNullValues);
+    }
+
+    public static FilterMethod GreaterThanOrEqualToFilterMethod(boolean matchNullValues){
+        return new MinMaxFilterMethod(true, true,matchNullValues);
+    }
+
+    public static FilterMethod LessThanOrEqualToFilterMethod(boolean matchNullValues){
+        return new MinMaxFilterMethod(false, true,matchNullValues);
+    }
+
 }
 
