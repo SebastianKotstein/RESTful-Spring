@@ -45,6 +45,20 @@ public class Filter {
         return this;
     }
 
+    public Filter add(String name, Object value, Class scope){
+        this.add(new FilterCriterion(name,value,Filter.DefaultFilterMethod()));
+        return this;
+    }
+    public Filter add(String name, Object value, FilterMethod method, Class scope){
+        this.add(new FilterCriterion(name,value,method));
+        return this;
+    }
+
+    public Filter add(String name, String key, Object value, FilterMethod method, Class scope){
+        this.add(new FilterCriterion(name,key,value,method));
+        return this;
+    }
+
     public Filter add(FilterCriterion item){
         items.add(item);
         return this;

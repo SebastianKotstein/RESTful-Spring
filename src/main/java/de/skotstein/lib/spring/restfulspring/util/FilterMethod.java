@@ -37,6 +37,9 @@ public abstract class FilterMethod {
         if(Objects.isNull(entity) || Objects.isNull(filterCriterion) || Objects.isNull(filterCriterion.getName()) || filterCriterion.getName().isBlank()){
             throw new RuntimeException("The passed entity is null");
         }
+        if(!Objects.isNull(filterCriterion.getScope()) && !entity.getClass().isInstance(filterCriterion.getScope())){
+            return true;
+        }
         if(Objects.isNull(filterCriterion.getQueryParameterValue())){
             return true;
         }

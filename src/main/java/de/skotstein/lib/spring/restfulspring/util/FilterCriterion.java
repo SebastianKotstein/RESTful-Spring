@@ -22,6 +22,7 @@ public class FilterCriterion {
     private String key;
     private Object value;
     private FilterMethod method;
+    private Class scope;
 
     /**
      * Initializes an instance of this class. The passed name argument is used for both name and query parameter key.
@@ -45,6 +46,30 @@ public class FilterCriterion {
         this.key = key;
         this.value = value;
         this.method = method;
+    }
+
+    /**
+     * Initializes an instance of this class. The passed name argument is used for both name and query parameter key.
+     * @param name the name of this {@link FilterCriterion}, which is linked to a {@link Filterable} annotation.
+     * @param value the query parameter value
+     * @param method the filtering method
+     * @param scope the scope (class) this filter should be applied to
+     */
+    public FilterCriterion(String name, Object value, FilterMethod method, Class scope) {
+        this(name,name,value,method,scope);
+    }
+
+    /**
+     * Initializes an instance of this class.
+     * @param name the name of this {@link FilterCriterion}, which is linked to a {@link Filterable} annotation.
+     * @param key the query parameter key
+     * @param value the query parameter value
+     * @param method the filtering method
+     * @param scope the scope (class) this filter should be applied to
+     */
+    public FilterCriterion(String name, String key, Object value, FilterMethod method, Class scope) {
+        this(name,key,value,method);
+        this.scope = scope;
     }
     
     /**
@@ -90,4 +115,29 @@ public class FilterCriterion {
     public void setMethod(FilterMethod method) {
         this.method = method;
     }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
+    }
+
+    public Class getScope() {
+        return scope;
+    }
+
+    public void setScope(Class scope) {
+        this.scope = scope;
+    }
+    
 }
