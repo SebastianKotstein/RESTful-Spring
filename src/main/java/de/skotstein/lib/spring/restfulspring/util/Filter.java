@@ -46,16 +46,16 @@ public class Filter {
     }
 
     public Filter add(String name, Object value, Class scope){
-        this.add(new FilterCriterion(name,value,Filter.DefaultFilterMethod()));
+        this.add(new FilterCriterion(name,value,Filter.DefaultFilterMethod(),scope));
         return this;
     }
     public Filter add(String name, Object value, FilterMethod method, Class scope){
-        this.add(new FilterCriterion(name,value,method));
+        this.add(new FilterCriterion(name,value,method,scope));
         return this;
     }
 
     public Filter add(String name, String key, Object value, FilterMethod method, Class scope){
-        this.add(new FilterCriterion(name,key,value,method));
+        this.add(new FilterCriterion(name,key,value,method,scope));
         return this;
     }
 
