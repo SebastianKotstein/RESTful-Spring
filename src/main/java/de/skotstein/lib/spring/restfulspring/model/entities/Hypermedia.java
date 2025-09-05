@@ -45,64 +45,187 @@ public abstract class Hypermedia {
         return hyperlinks;
     }
 
+    /**
+     * Adds a hyperlink consisting of the passed link relation and the reference to this {@link Hypermedia} entity.
+     * @param rel link relation
+     * @param href hypertext reference
+     */
     public void addHyperlink(String rel, String href) {
-        hyperlinks.add(new Hyperlink(href,rel));
+        this.addHyperlink(new Hyperlink(href,rel));
     }
 
+    /**
+     * Adds a hyperlink consisting of the passed link relation, the reference, and the request method to this {@link Hypermedia} entity.
+     * @param rel link relation
+     * @param href hypertext reference
+     * @param method request method
+     */
     public void addHyperlink(String rel, String href, String method){
         Hyperlink hyperlink = new Hyperlink(href, rel);
         hyperlink.setMethod(method);
+        this.addHyperlink(hyperlink);
+    }
+
+    /**
+     * Adds the passed {@link Hyperlink} to this {@link Hypermedia} entity.
+     * @param hyperlink the hyperlink object
+     */
+    public void addHyperlink(Hyperlink hyperlink){
         hyperlinks.add(hyperlink);
     }
 
+    /**
+     * Adds a hyperlink consisting of the passed link relation and a reference that is automatically derived from the passed endpoint definition to this {@link Hypermedia} entity.
+     * Set 'expand' to true to substitute path and query parameters of the derived URI with given parameters and embed a static URI as reference. Set 'expand' to false to embed the URI as a template.
+     * @see {@link Link#expand(Object...)} for more details about URI template expansion.
+     * @param rel link relation
+     * @param invocationValue The endpoint definition. Use {@link WebMvcLinkBuilder#methodOn(Class, Object...)} to specify the endpoint.
+     * @param expand true to embed a static URI as reference; false to embed the URI as template
+     */
     public void addHyperlink(String rel, Object invocationValue, boolean expand) {
+        Link link = null;
         if (expand) {
-            hyperlinks.add(new Hyperlink(WebMvcLinkBuilder.linkTo(invocationValue).withRel(rel).expand()));
+            link = WebMvcLinkBuilder.linkTo(invocationValue).withRel(rel).expand();
         } else {
-            hyperlinks.add(new Hyperlink(WebMvcLinkBuilder.linkTo(invocationValue).withRel(rel)));
+            link = WebMvcLinkBuilder.linkTo(invocationValue).withRel(rel);
         }
+        this.addHyperlink(new Hyperlink(link));
     }
 
+    /**
+     * Adds a hyperlink consisting of the passed link relation, a reference that is automatically derived from the passed endpoint definition, and the request method to this {@link Hypermedia} entity.
+     * Set 'expand' to true to substitute path and query parameters of the derived URI with given parameters and embed a static URI as reference. Set 'expand' to false to embed the URI as a template.
+     * @see {@link Link#expand(Object...)} for more details about URI template expansion.
+     * @param rel link relation
+     * @param invocationValue The endpoint definition. Use {@link WebMvcLinkBuilder#methodOn(Class, Object...)} to specify the endpoint.
+     * @param expand true to embed a static URI as reference; false to embed the URI as template
+     * @param method request method
+     */
     public void addHyperlink(String rel, Object invocationValue, boolean expand, String method){
-        Hyperlink hyperlink = null;
+        Link link = null;
         if (expand) {
-            hyperlink = new Hyperlink(WebMvcLinkBuilder.linkTo(invocationValue).withRel(rel).expand());
+            link = WebMvcLinkBuilder.linkTo(invocationValue).withRel(rel).expand();
         } else {
-            hyperlink = new Hyperlink(WebMvcLinkBuilder.linkTo(invocationValue).withRel(rel));
+            link = WebMvcLinkBuilder.linkTo(invocationValue).withRel(rel);
         }
+        Hyperlink hyperlink = new Hyperlink(link);
         hyperlink.setMethod(method);
-        hyperlinks.add(hyperlink);
+        this.addHyperlink(hyperlink);
     }
 
+    /**
+     * Conditionally adds a hyperlink consisting of the passed link relation and the reference to this {@link Hypermedia} entity if a hyperlink having the passed link relation has not been added yet.
+     * @param rel link relation
+     * @param href hypertext reference
+     */
     public void addHyperlinkIfRelNotExisting(String rel, String href){
         if(!hasHyperlink(rel)){
-            hyperlinks.add(new Hyperlink(href,rel));
+            this.addHyperlink(rel, href);
         }
     }
 
+    /**
+     * Conditionally adds a hyperlink consisting of the passed link relation, the reference, and the request method to this {@link Hypermedia} entity if a hyperlink having the passed link relation has not been added yet.
+     * @param rel link relation
+     * @param href hypertext reference
+     * @param method request method
+     */
+    public void addHyperlinkIfRelNotExisting(String rel, String href, String method){
+        if(!hasHyperlink(rel)){
+            this.addHyperlink(rel, href, method);
+        }
+    }
+
+    /**
+     * Conditionally adds the passed {@link Hyperlink} to this {@link Hypermedia} entity if a hyperlink having the contained link relation has not been added yet.
+     * @param hyperlink the hyperlink object
+     */
+    public void addHyperlinkIfRelNotExisting(Hyperlink hyperlink){
+        if(!hasHyperlink(hyperlink.getRel())){
+            hyperlinks.add(hyperlink);
+        }
+    }
+
+    /**
+     * Conditionally adds a hyperlink consisting of the passed link relation and a reference that is automatically derived from the passed endpoint definition to this {@link Hypermedia} entity if a hyperlink having the passed link relation has not been added yet.
+     * Set 'expand' to true to substitute path and query parameters of the derived URI with given parameters and embed a static URI as reference. Set 'expand' to false to embed the URI as a template.
+     * @see {@link Link#expand(Object...)} for more details about URI template expansion.
+     * @param rel link relation
+     * @param invocationValue The endpoint definition. Use {@link WebMvcLinkBuilder#methodOn(Class, Object...)} to specify the endpoint.
+     * @param expand true to embed a static URI as reference; false to embed the URI as template
+     */
     public void addHyperlinkIfRelNotExisting(String rel, Object invocationValue, boolean expand){
         if(!hasHyperlink(rel)){
             this.addHyperlink(rel, invocationValue, expand);
         }
     }
 
+    /**
+     * Conditionally adds a hyperlink consisting of the passed link relation, a reference that is automatically derived from the passed endpoint definition, and the request method to this {@link Hypermedia} entity if a hyperlink having the passed link relation has not been added yet.
+     * Set 'expand' to true to substitute path and query parameters of the derived URI with given parameters and embed a static URI as reference. Set 'expand' to false to embed the URI as a template.
+     * @see {@link Link#expand(Object...)} for more details about URI template expansion.
+     * @param rel link relation
+     * @param invocationValue The endpoint definition. Use {@link WebMvcLinkBuilder#methodOn(Class, Object...)} to specify the endpoint.
+     * @param expand true to embed a static URI as reference; false to embed the URI as template
+     * @param method request method
+     */
     public void addHyperlinkIfRelNotExisting(String rel, Object invocationValue, boolean expand, String method){
         if(!hasHyperlink(rel)){
             this.addHyperlink(rel, invocationValue, expand, method);
         }
     }
 
+    /**
+     * Replaces the reference of an existing hyperlink that has the passed link relation.
+     * Nothing will happen if no such hyperlink exists.
+     * @param rel link relation
+     * @param href hypertext reference that replaces the existing reference
+     */
     public void replaceHyperlinkIfRelExisting(String rel, String href){
+        this.replaceHyperlinkIfRelExisting(rel, href, null);
+    }
+
+    /**
+     * Replaces the reference of an existing hyperlink that has the passed link relation.
+     * Nothing will happen if no such hyperlink exists.
+     * @param rel link relation
+     * @param href hypertext reference that replaces the existing reference
+     * @param method if set the request method is also replaced
+     */
+    public void replaceHyperlinkIfRelExisting(String rel, String href, String method){
         Hyperlink hyperlink = getHyperlink(rel);
         if(!Objects.isNull(hyperlink)){
             hyperlink.setHref(href);
+            if(!Objects.isNull(method)){
+                hyperlink.setMethod(method);
+            }
         }
     }
 
+    /**
+     * Replaces the reference of an existing hyperlink that has the passed link relation.
+     * Nothing will happen if no such hyperlink exists.
+     * The new reference is automatically derived from the passed endpoint definition
+     * Set 'expand' to true to substitute path and query parameters of the derived URI with given parameters and embed a static URI as reference. Set 'expand' to false to embed the URI as a template.
+     * @param rel link relation
+     * @param invocationValue The endpoint definition. Use {@link WebMvcLinkBuilder#methodOn(Class, Object...)} to specify the endpoint.
+     * @param expand true to embed a static URI as reference; false to embed the URI as template
+     * @param method request method
+     */
     public void replaceHyperlinkIfRelExisting(String rel, Object invocationValue, boolean expand){
         this.replaceHyperlinkIfRelExisting(rel, invocationValue, expand, null);
     }
 
+    /**
+     * Replaces the reference of an existing hyperlink that has the passed link relation.
+     * Nothing will happen if no such hyperlink exists.
+     * The new reference is automatically derived from the passed endpoint definition
+     * Set 'expand' to true to substitute path and query parameters of the derived URI with given parameters and embed a static URI as reference. Set 'expand' to false to embed the URI as a template.
+     * @param rel link relation
+     * @param invocationValue The endpoint definition. Use {@link WebMvcLinkBuilder#methodOn(Class, Object...)} to specify the endpoint.
+     * @param expand true to embed a static URI as reference; false to embed the URI as template
+     * @param method if set the request method is also replaced
+     */
     public void replaceHyperlinkIfRelExisting(String rel, Object invocationValue, boolean expand, String method){
         Hyperlink hyperlink = getHyperlink(rel);
         if(!Objects.isNull(hyperlink)){
