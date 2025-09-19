@@ -48,5 +48,7 @@ public interface HyperlinkBuilderCommon {
 
     public HyperlinkBuilderCommon anyOf();
 
+    public HyperlinkBuilderCommon nullHyperlink();
+
     public Hyperlink build();
 }

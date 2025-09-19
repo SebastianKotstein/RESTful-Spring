@@ -21,6 +21,11 @@ public class HyperlinkBuilder implements HyperlinkBuilderCommon, HyperlinkBuilde
     private Boolean isAuthenticated = null;
     private boolean allOf = true;
     private Set<String> authorities = null;
+    private boolean returnNull = false;
+
+    public static HyperlinkBuilder createLink(){
+        return new HyperlinkBuilder();
+    }
 
     /*************************************** Href ****************************************/
 
@@ -219,8 +224,19 @@ public class HyperlinkBuilder implements HyperlinkBuilderCommon, HyperlinkBuilde
         return this;
     }
 
+    /************************************************* Static behavior *************************************************/
+
+    @Override
+    public HyperlinkBuilderCommon nullHyperlink() {
+        this.returnNull = true;
+        return this;
+    }
+
     @Override
     public Hyperlink build() {
+        if(this.returnNull){
+            return null;
+        }
         if(!Objects.isNull(isAuthenticated) || !Objects.isNull(authorities)){
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if(!Objects.isNull(isAuthenticated) && isAuthenticated.booleanValue() != authentication.isAuthenticated()){
@@ -246,4 +262,6 @@ public class HyperlinkBuilder implements HyperlinkBuilderCommon, HyperlinkBuilde
         }
         return hyperlink;
     }
+
+
 }

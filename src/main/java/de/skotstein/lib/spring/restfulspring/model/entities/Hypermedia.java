@@ -29,6 +29,8 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import de.skotstein.lib.spring.restfulspring.model.representations.HypermediaRepresentation;
+import de.skotstein.lib.spring.restfulspring.util.HyperlinkBuilder;
+import de.skotstein.lib.spring.restfulspring.util.HyperlinkBuilderCommon;
 
 @JsonView(HypermediaRepresentation.class)
 public abstract class Hypermedia {
@@ -73,6 +75,18 @@ public abstract class Hypermedia {
     public void addHyperlink(Hyperlink hyperlink){
         hyperlinks.add(hyperlink);
     }
+
+    /** 
+     * Adds a hyperlink built by the passed {@link HyperlinkBuilder} 
+     * @param hyperlink the hyperlink object
+     */
+    public void addHyperlink(HyperlinkBuilderCommon hyperlinkBuilder){
+        Hyperlink hyperlink = hyperlinkBuilder.build();
+        if(!Objects.isNull(hyperlink)){
+            this.addHyperlink(hyperlink);
+        }
+    }
+
 
     /**
      * Adds a hyperlink consisting of the passed link relation and a reference that is automatically derived from the passed endpoint definition to this {@link Hypermedia} entity.
