@@ -74,8 +74,16 @@ public interface RestClient {
     /**
      * Sets the base (URI prefix). Pass 'null' to set an empty base path.
      * @param basePath the specified base (URI prefix)
+     * @return the {@link RestClientImpl}
      */
     public RestClient withBase(String basePath);
+
+    /**
+     * Sets the timeout for the HTTP connection.
+     * @param timeout timeout in milliseconds
+     * @return the {@link RestClientImpl}
+     */
+    public RestClient setTimeout(int timeout);
 
     
     /**

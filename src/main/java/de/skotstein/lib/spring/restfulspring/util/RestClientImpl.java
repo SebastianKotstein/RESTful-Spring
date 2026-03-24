@@ -32,6 +32,8 @@ public class RestClientImpl implements RestClient, RestClientTransition{
 
     private String linksPropertyKey = "_links";
     private boolean requestExceptionEnabled = true;
+
+    private int timeout = -1;
     
     public RestClientImpl(){
 
@@ -124,6 +126,13 @@ public class RestClientImpl implements RestClient, RestClientTransition{
         return this;
     }
 
+    @Override
+    public RestClient setTimeout(int timeout) {
+        this.timeout = timeout;
+        return this;
+    }
+
+
 
     @Override
     public RestClient get(String uri) throws RestClientIOException, RestClientRequestException{
@@ -170,6 +179,10 @@ public class RestClientImpl implements RestClient, RestClientTransition{
         try{
             URL url = new URL(uri);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            if(this.timeout != -1){
+                connection.setReadTimeout(timeout);
+                connection.setConnectTimeout(timeout);
+            }
             
             //set method
             connection.setRequestMethod(method);
@@ -477,6 +490,7 @@ public class RestClientImpl implements RestClient, RestClientTransition{
         }
         return null;
     }
+
 
 
     
