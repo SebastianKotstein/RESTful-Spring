@@ -275,6 +275,10 @@ public class RestClientImpl implements RestClient, RestClientTransition{
             URL url = new URL(uri);
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            if(this.timeout != -1){
+                connection.setReadTimeout(timeout);
+                connection.setConnectTimeout(timeout);
+            }
             
             //set method
             connection.setRequestMethod(method);
